@@ -1,4 +1,4 @@
-package com.domi.TestProj1
+package com.domi.testproj1
 
 import org.junit.Test
 
