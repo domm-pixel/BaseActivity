@@ -1,18 +1,31 @@
 package com.domi.testproj1.base
 
+import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 
-abstract class BaseActivity<T: ViewDataBinding>(private val layoutRes: Int): AppCompatActivity() {
+abstract class BaseActivity<B : ViewDataBinding>(
+    private val layoutRes: Int
+) : AppCompatActivity() {
+    protected lateinit var dataBinding: B
 
-    protected lateinit var binding: T
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        dataBinding = DataBindingUtil.setContentView(this, layoutRes)
+        dataBinding.lifecycleOwner = this
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        binding = DataBindingUtil.setContentView(this, layoutRes)
-        binding.lifecycleOwner = this
+    /**
+     * use in activity like .. binding { /*codes: */}
+     */
+    protected fun binding(action: B.() -> Unit) {
+        dataBinding.run(action)
+    }
+
+    // toStart activity intents
+    override fun startActivity(intent: Intent?) {
+        super.startActivity(intent)
     }
 }
